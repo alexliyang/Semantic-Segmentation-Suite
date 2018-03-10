@@ -22,19 +22,6 @@ def LOG(X, f=None):
 	else:
 		f.write(time_stamp + " " + X)
 
-# Replaces a select value in an array with a new value
-def replace_val_in_array(input_array, original_val, replace_val = sys.maxsize - 1):
-    for index, item in enumerate(input_array):
-        if item == original_val:
-            input_array[index] = replace_val
-    return input_array
-
-# Replace NaNs with a value
-def replaces_nan_in_array(input_array, replace_val=1.0):
-    for index, item in enumerate(input_array):
-        if math.isnan(item):
-            input_array[index] = replace_val
-    return input_array
 
 # Count total number of parameters in the model
 def count_params():
@@ -153,6 +140,16 @@ def compute_mean_iou(pred, label):
 
     mean_iou = np.mean(iou_list)
     return mean_iou
+
+
+def evaluate_segmentation(pred, gt, num_classes):
+    accuracy = compute_avg_accuracy(pred, gt)
+    class_accuracies = compute_class_accuracies(pred, gt, num_classes)
+    prec = precision(pred, gt)
+    rec = recall(pred, gt)
+    f1 = f1score(pred, gt)
+    iou = compute_mean_iou(pred, gt)
+    return accuracy, class_accuracies, prec, rec, f1, iou
 
 def median_frequency_balancing(labels_dir, num_classes):
     '''
